@@ -1,0 +1,42 @@
+﻿<Window x:Class="PowerShellTest.MainWindow"
+        xmlns:local="clr-namespace:PowerShellTest"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        Title="PowerShell" Height="750" Width="625">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ToolBarTray Grid.Row="0" Grid.Column="0">
+            <ToolBar>
+                <Button ToolTip="Abrir" Click="cmdOpen_Click">
+                    <Image Source="Resources/Folder.png" />
+                </Button>
+                <Button ToolTip="Guardar" Click="cmdSave_Click">
+                    <Image Source="Resources/Save.png" />
+                </Button>
+                <Separator/>
+                <Button ToolTip="Ejecutar" Click="cmdProcess_Click">
+                    <Image Source="Resources/Process.png" />
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+        <avalonEdit:TextEditor x:Name="txtEditor" Grid.Row="1" Grid.Column="0" Margin="5" BorderBrush="Black" BorderThickness="1"
+                               FontFamily="Consolas" SyntaxHighlighting="C#" 
+                               FontSize="10pt" ShowLineNumbers="True" />
+        <GridSplitter ResizeDirection="Rows" Grid.Column="0" Grid.Row="2"
+                      Width="Auto" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      Margin="0" Background="Navy"/>
+        <TextBox x:Name="txtLog" Grid.Row="3" Grid.Column="0" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+    </Grid>
+</Window>
