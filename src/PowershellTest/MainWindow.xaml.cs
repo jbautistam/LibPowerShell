@@ -35,7 +35,7 @@ namespace PowerShellTest
 																			{
 																				Script = txtEditor.Text,
 																				InputParameters = null,
-																				UseRunSpace = true
+																				UseRunSpace = chkHost.IsChecked ?? false
 																			}
 																  );
 
@@ -65,12 +65,12 @@ namespace PowerShellTest
 				}
 			else
 				Log("Without ouptut objects");
-			// Errores
-			if (psResult.Errors.Count > 0)
+			// Log
+			if (psResult.Log.Count > 0)
 			{
-				Log("Errors");
-				foreach (string error in psResult.Errors)
-					Log($"\t{error}");
+				Log("Log");
+				foreach (PowerShellLog log in psResult.Log)
+					Log($"\t[{log.Type.ToString()}] {log.Message}");
 			}
 			else
 				Log("No errors");
@@ -211,6 +211,11 @@ namespace PowerShellTest
 		private void cmdSave_Click(object sender, RoutedEventArgs e)
 		{
 			SaveFile();
+		}
+
+		private void cmdCleanLog_Click(object sender, RoutedEventArgs e)
+		{
+			txtLog.Text = string.Empty;
 		}
 	}
 }

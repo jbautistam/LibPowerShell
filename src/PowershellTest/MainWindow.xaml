@@ -19,17 +19,22 @@
         </Grid.ColumnDefinitions>
         <ToolBarTray Grid.Row="0" Grid.Column="0">
             <ToolBar>
-                <Button ToolTip="Abrir" Click="cmdOpen_Click">
+                <Button ToolTip="Open" Click="cmdOpen_Click">
                     <Image Source="Resources/Folder.png" />
                 </Button>
-                <Button ToolTip="Guardar" Click="cmdSave_Click">
+                <Button ToolTip="Save" Click="cmdSave_Click">
                     <Image Source="Resources/Save.png" />
                 </Button>
                 <Separator/>
-                <Button ToolTip="Ejecutar" Click="cmdProcess_Click">
+                <Button ToolTip="Execute" Click="cmdProcess_Click">
                     <Image Source="Resources/Process.png" />
                 </Button>
-            </ToolBar>
+				<CheckBox x:Name="chkHost" IsChecked="False" Content="Host powershell with runspace"/>
+				<Separator/>
+				<Button ToolTip="Clean log" Click="cmdCleanLog_Click">
+					<Image Source="Resources/Delete.png" />
+				</Button>
+			</ToolBar>
         </ToolBarTray>
         <avalonEdit:TextEditor x:Name="txtEditor" Grid.Row="1" Grid.Column="0" Margin="5" BorderBrush="Black" BorderThickness="1"
                                FontFamily="Consolas" SyntaxHighlighting="C#" 

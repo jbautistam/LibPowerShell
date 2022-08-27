@@ -57,10 +57,10 @@ namespace Bau.Libraries.LibPowerShell
 						// Guarda los valores de salida
 						foreach (PSObject outputItem in outputItems)
 							_result.OutputObjects.Add(outputItem.BaseObject);
-						// Guarda los errores
-						if (instance.Streams.Error.Count > 0)
-							foreach (ErrorRecord error in instance.Streams.Error)
-								_result.AddLog(PowerShellLog.LogType.Error, error.FullyQualifiedErrorId, error.Exception);
+						//// Guarda los errores
+						//if (instance.Streams.Error.Count > 0)
+						//	foreach (ErrorRecord error in instance.Streams.Error)
+						//		_result.AddLog(PowerShellLog.LogType.Error, error.ToString(), error.Exception);
 				}
 			}
 			catch (Exception exception)
@@ -87,7 +87,7 @@ namespace Bau.Libraries.LibPowerShell
 						_result.AddLog(PowerShellLog.LogType.Warning, records[args.Index].Message);
 					break;
 				case PSDataCollection<ErrorRecord> records:
-						_result.AddLog(PowerShellLog.LogType.Error, records[args.Index].FullyQualifiedErrorId, records[args.Index].Exception);
+						_result.AddLog(PowerShellLog.LogType.Error, records[args.Index].ToString(), records[args.Index].Exception);
 					break;
 			}
 		}
