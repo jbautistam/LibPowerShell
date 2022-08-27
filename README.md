@@ -1,3 +1,3 @@
 # LibPowershell
 Librería de ejecución de scripts de Powershell
-Utiliza .Net Core 3.1
+Utiliza .Net 6.9
