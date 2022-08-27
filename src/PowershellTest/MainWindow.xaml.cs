@@ -113,7 +113,7 @@ namespace PowerShellTest
 						// Graba el archivo
 						SaveTextFile(fileName, txtEditor.Text);
 						// Mensaje al usuario
-						MessageBox.Show("Archivo grabado");
+						MessageBox.Show("File saved");
 					}
 			}
 		}
