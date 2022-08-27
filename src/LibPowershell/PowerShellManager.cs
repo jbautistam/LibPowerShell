@@ -15,6 +15,7 @@ namespace Bau.Libraries.LibPowerShell
     {
 		// Eventos públicos
 		public event EventHandler EndExecute;
+		public event EventHandler<EventArguments.PowerShellLogEventArgs> PowershellExecutionLog;
 		// Variables globales
 		private PowerShellResult _result;
 
@@ -45,51 +46,25 @@ namespace Bau.Libraries.LibPowerShell
 						// Añade los parámetros de entrada
 						if (Context.InputParameters is not null)
 							instance.AddParameters(Context.InputParameters);
-						// En caso que los estemos ejecutando en un espacio separado, añadimos el tratamiento de los eventos
-						//if (Context.UseRunSpace)
-						//{
-							instance.Streams.Error.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
-							instance.Streams.Warning.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
-							instance.Streams.Information.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
-						//}
+						// Añadimos el tratamiento de los distintos streams de salida de powerShell
+						instance.Streams.Error.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
+						instance.Streams.Warning.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
+						instance.Streams.Information.DataAdded += (sender, args) => TreatStreamInfo(sender, args);
 						// Llama a la ejecución de PowerShell
 						outputItems = await instance.InvokeAsync();
 						// Guarda los valores de salida
 						foreach (PSObject outputItem in outputItems)
 							_result.OutputObjects.Add(outputItem.BaseObject);
-						//// Guarda los errores
-						//if (instance.Streams.Error.Count > 0)
-						//	foreach (ErrorRecord error in instance.Streams.Error)
-						//		_result.AddLog(PowerShellLog.LogType.Error, error.ToString(), error.Exception);
 				}
 			}
 			catch (Exception exception)
 			{
-				_result.AddLog(PowerShellLog.LogType.Error, exception.Message, exception);
+				RaiseLog(_result.AddLog(PowerShellLog.LogType.Error, exception.Message, exception));
 			}
 			// Llama al evento de fin de proceso
 			EndExecute?.Invoke(this, EventArgs.Empty);
 			// Devuelve el resultado
 			return _result;
-		}
-
-		/// <summary>
-		///		Trata la información enviada en los eventos de PowerShell
-		/// </summary>
-		private void TreatStreamInfo(object sender, DataAddedEventArgs args)
-		{
-			switch (sender)
-			{
-				case PSDataCollection<InformationalRecord> records:
-						_result.AddLog(PowerShellLog.LogType.Info, records[args.Index].Message);
-					break;
-				case PSDataCollection<WarningRecord> records:
-						_result.AddLog(PowerShellLog.LogType.Warning, records[args.Index].Message);
-					break;
-				case PSDataCollection<ErrorRecord> records:
-						_result.AddLog(PowerShellLog.LogType.Error, records[args.Index].ToString(), records[args.Index].Exception);
-					break;
-			}
 		}
 
 		/// <summary>
@@ -126,6 +101,34 @@ namespace Bau.Libraries.LibPowerShell
 						sessionState.ImportPSModule(moduleName);
 				// Devuelve la sesión
 				return sessionState;
+		}
+
+		/// <summary>
+		///		Trata la información enviada en los eventos de PowerShell
+		/// </summary>
+		private void TreatStreamInfo(object sender, DataAddedEventArgs args)
+		{
+			switch (sender)
+			{
+				case PSDataCollection<InformationalRecord> records:
+						RaiseLog(_result.AddLog(PowerShellLog.LogType.Info, records[args.Index].Message));
+					break;
+				case PSDataCollection<WarningRecord> records:
+						RaiseLog(_result.AddLog(PowerShellLog.LogType.Warning, records[args.Index].Message));
+					break;
+				case PSDataCollection<ErrorRecord> records:
+						RaiseLog(_result.AddLog(PowerShellLog.LogType.Error, records[args.Index].ToString(), records[args.Index].Exception));
+					break;
+			}
+		}
+
+		/// <summary>
+		///		Lanza el evento de log
+		/// </summary>
+		private void RaiseLog(PowerShellLog log)
+		{
+			if (log is not null)
+				PowershellExecutionLog?.Invoke(this, new EventArguments.PowerShellLogEventArgs(log));
 		}
 
 		/// <summary>
